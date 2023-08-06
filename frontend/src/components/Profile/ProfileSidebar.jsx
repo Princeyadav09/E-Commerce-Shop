@@ -13,11 +13,11 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { server } from "../../server";
 import { toast } from "react-toastify";
-// import { useSelector } from "react-redux"; 
+import { useSelector } from "react-redux";
 
 const ProfileSidebar = ({ setActive, active }) => {
   const navigate = useNavigate();
-//  const {user} = useSelector((state) => state.user);
+ const {user} = useSelector((state) => state.user);
   const logoutHandler = () => {
     axios
       .get(`${server}/user/logout`, { withCredentials: true })
@@ -128,13 +128,13 @@ const ProfileSidebar = ({ setActive, active }) => {
         </span>
       </div>
 
-      {/* {user && user?.role === "Admin" && (
-        <Link to="/admin/dashboard"> */}
+      {user && user?.role === "Admin" && (
+        <Link to="/admin/dashboard">
           <div
             className="flex items-center cursor-pointer w-full mb-8"
-            onClick={() => setActive(8) || logoutHandler()}
+            onClick={() => setActive(8)}
           >
-            {/* <MdOutlineAdminPanelSettings
+            <MdOutlineAdminPanelSettings
               size={20}
               color={active === 7 ? "red" : ""}
             />
@@ -151,7 +151,7 @@ const ProfileSidebar = ({ setActive, active }) => {
       <div
         className="single_item flex items-center cursor-pointer w-full mb-8"
         onClick={logoutHandler}
-      > */}
+      >
         <AiOutlineLogin size={20} color={active === 8 ? "red" : ""} />
         <span
           className={`pl-3 ${

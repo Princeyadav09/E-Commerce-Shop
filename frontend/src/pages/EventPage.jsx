@@ -13,7 +13,17 @@ const EventsPage = () => {
       ) : (
         <div>
           <Header activeHeading={4} />
-          <EventCard active={true} data={allEvents && allEvents[0]} />
+          {
+          allEvents?.length !== 0 && (
+            <EventCard active={true} data={allEvents && allEvents[0]} />
+          )
+         }
+         <center><h4 className="mt-32">{
+           allEvents?.length === 0 && (
+            'No Events have!'
+           )
+          }
+         </h4></center>
         </div>
       )}
     </>
