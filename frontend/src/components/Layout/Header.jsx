@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "../../styles/styles";
 import { categoriesData, productData } from "../../static/data";
@@ -31,6 +31,25 @@ const Header = ({ activeHeading }) => {
   const [openCart, setOpenCart] = useState(false);
   const [openWishlist, setOpenWishlist] = useState(false);
   const [open, setOpen] = useState(false);
+  const [openSearch,setOpenSearch] = useState(false);
+
+  let menuRef = useRef();
+  let catRef = useRef();
+
+  useEffect(()=>{
+      let handler = (e) =>{
+        if(!menuRef?.current?.contains(e.target)){
+          setSearchData(null);
+        }
+        if(!catRef?.current?.contains(e.target)){
+          setDropDown(false);
+        }
+      }
+      document.addEventListener("mousedown",handler);
+      return() =>{
+        document.removeEventListener("mousedown",handler);
+      }
+   })
 
   const handleSearchChange = (e) => {
     const term = e.target.value;
@@ -65,7 +84,7 @@ const Header = ({ activeHeading }) => {
             </Link>
           </div>
           {/* search box */}
-          <div className="w-[50%] relative">
+          <div className="w-[50%] relative" ref={menuRef}>
             <input
               type="text"
               placeholder="Search Product..."
@@ -77,7 +96,7 @@ const Header = ({ activeHeading }) => {
               size={30}
               className="absolute right-2 top-1.5 cursor-pointer"
             />
-            {searchData && searchData.length !== 0 ? (
+            {searchData && searchData?.length !== 0 ? (
               <div className="absolute min-h-[30vh] bg-slate-50 shadow-sm-2 z-[9] p-4">
                 {searchData &&
                   searchData.map((i, index) => {
@@ -117,7 +136,7 @@ const Header = ({ activeHeading }) => {
           className={`${styles.section} relative ${styles.noramlFlex} justify-between`}
         >
           {/* categories */}
-          <div onClick={() => setDropDown(!dropDown)}>
+          <div onClick={() => setDropDown(!dropDown)} ref={catRef}>
             <div className="relative h-[60px] mt-[10px] w-[270px] hidden 1000px:block">
               <BiMenuAltLeft size={30} className="absolute top-3 left-2" />
               <button
@@ -176,7 +195,7 @@ const Header = ({ activeHeading }) => {
                 {isAuthenticated ? (
                   <Link to="/profile">
                     <img
-                      src={`${backend_url}${user.avatar}`}
+                      src={`${user?.avatar?.url}`}
                       className="w-[35px] h-[35px] rounded-full"
                       alt=""
                     />
@@ -315,7 +334,7 @@ const Header = ({ activeHeading }) => {
                   <div>
                     <Link to="/profile">
                       <img
-                        src={`${backend_url}${user.avatar}`}
+                        src={`${user.avatar?.url}`}
                         alt=""
                         className="w-[60px] h-[60px] rounded-full border-[3px] border-[#0eae88]"
                       />

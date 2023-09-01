@@ -28,10 +28,10 @@ const CreateEvent = () => {
     const minEndDate = new Date(startDate.getTime() + 3 * 24 * 60 * 60 * 1000);
     setStartDate(startDate);
     setEndDate(null);
-    // document.getElementById("end-date").min = minEndDate.toISOString.slice(
-    //     0,
-    //     10
-    //   );
+    document.getElementById("end-date").min = minEndDate.toISOString.slice(
+      0,
+      10
+    );
   };
 
   const handleEndDateChange = (e) => {
@@ -60,21 +60,19 @@ const CreateEvent = () => {
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    setImages((prevImages)=>[...prevImages, ...files]);
-    // const files = Array.from(e.target.files);
 
-    // setImages([]);
+    setImages([]);
 
-    // files.forEach((file) => {
-    //   const reader = new FileReader();
+    files.forEach((file) => {
+      const reader = new FileReader();
 
-    //   reader.onload = () => {
-    //     if (reader.readyState === 2) {
-    //       setImages((old) => [...old, reader.result]);
-    //     }
-    //   };
-    //   reader.readAsDataURL(file);
-    // });
+      reader.onload = () => {
+        if (reader.readyState === 2) {
+          setImages((old) => [...old, reader.result]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
   const handleSubmit = (e) => {
@@ -85,17 +83,21 @@ const CreateEvent = () => {
     images.forEach((image) => {
       newForm.append("images", image);
     });
-    newForm.append("name", name);
-    newForm.append("description", description);
-    newForm.append("category", category);
-    newForm.append("tags", tags);
-    newForm.append("originalPrice", originalPrice);
-    newForm.append("discountPrice", discountPrice);
-    newForm.append("stock", stock);
-    newForm.append("shopId", seller._id);
-    newForm.append("start_Date", startDate.toISOString());
-    newForm.append("Finish_Date", endDate.toISOString());
-    dispatch(createevent(newForm));
+    console.log(seller);
+    const data = {
+      name,
+      description,
+      category,
+      tags,
+      originalPrice,
+      discountPrice,
+      stock,
+      images,
+      shopId: seller._id,
+      start_Date: startDate?.toISOString(),
+      Finish_Date: endDate?.toISOString(),
+    };
+    dispatch(createevent(data));
   };
 
   return (
@@ -257,7 +259,7 @@ const CreateEvent = () => {
             {images &&
               images.map((i) => (
                 <img
-                  src={URL.createObjectURL(i)}
+                  src={i}
                   key={i}
                   alt=""
                   className="h-[120px] w-[120px] object-cover m-2"

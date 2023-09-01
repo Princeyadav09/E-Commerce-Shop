@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BsFillBagFill } from "react-icons/bs";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "../styles/styles";
 import { getAllOrdersOfUser } from "../redux/actions/order";
@@ -12,12 +12,13 @@ import { toast } from "react-toastify";
 
 const UserOrderDetails = () => {
   const { orders } = useSelector((state) => state.order);
-  const { user } = useSelector((state) => state.user);
+  const { user, isAuthenticated } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [comment, setComment] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
   const [rating, setRating] = useState(1);
+  const navigate = useNavigate();
 
   const { id } = useParams();
 
@@ -28,6 +29,7 @@ const UserOrderDetails = () => {
   const data = orders && orders.find((item) => item._id === id);
 
   const reviewHandler = async (e) => {
+    console.log(selectedItem);
     await axios
       .put(
         `${server}/product/create-new-review`,
@@ -61,6 +63,28 @@ const UserOrderDetails = () => {
     }).catch((error) => {
       toast.error(error.response.data.message);
     })
+  };
+
+  const handleMessageSubmit = async () => {
+    if (isAuthenticated) {
+      const groupTitle = selectedItem?._id + user._id;
+      const userId = user._id;
+      const sellerId = selectedItem?.shop._id;
+      await axios
+        .post(`${server}/conversation/create-new-conversation`, {
+          groupTitle,
+          userId,
+          sellerId,
+        })
+        .then((res) => {
+          navigate(`/inbox?${res.data.conversation._id}`);
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
+    } else {
+      toast.error("Please login to create a conversation");
+    }
   };
 
   return (
@@ -233,9 +257,9 @@ const UserOrderDetails = () => {
         </div>
       </div>
       <br />
-      <Link to="/">
+      <dav onClick={handleMessageSubmit}>
         <div className={`${styles.button} text-white`}>Send Message</div>
-      </Link>
+      </dav>
       <br />
       <br />
     </div>
