@@ -49,7 +49,7 @@ const ShopLogin = () => {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700"
               >
-                Email address
+                Email address : geekprinceyadav@gmail.com
               </label>
               <div className="mt-1">
                 <input
@@ -68,7 +68,7 @@ const ShopLogin = () => {
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700"
               >
-                Password
+                Password : Abcd@1234
               </label>
               <div className="mt-1 relative">
                 <input
